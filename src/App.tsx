@@ -15,6 +15,7 @@ import { BottomNav } from "./components/features/BottomNav";
 import Login from "./components/features/Login";
 import Register from "./components/features/Register";
 import { useEcoPoints } from "./hooks/useEcoPoints";
+import LOGO1 from "/Logo1.png";
 
 export type Screen = "home" | "transport" | "qr" | "map" | "payment";
 
@@ -34,12 +35,14 @@ const MainAppContent = () => {
       <div className="max-w-md mx-auto bg-white min-h-screen shadow-lg">
         <header className="bg-linear-to-r from-green-600 to-emerald-600 text-white p-4 sticky top-0 z-10 shadow-md">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold">EcoCity</h1>
-            <div className="flex flex-wrap justify-end gap-2">
-              <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full text-xs">
-                <span>🌿</span>
-                <span>{points.toLocaleString()} pts</span>
-              </div>
+              <img
+                  src={LOGO1}
+                  alt="EcoCity logo"
+                  className="w-20 h-auto"
+              />
+              <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
+              <span>🌿</span>
+              <span>{points.toLocaleString()} pts</span>
             </div>
           </div>
         </header>
