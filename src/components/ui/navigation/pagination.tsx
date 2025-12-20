@@ -5,11 +5,14 @@ import {
   MoreHorizontalIcon,
 } from "lucide-react";
 
-import { cn } from "./utils";
-import { Button } from "./button";
-import { buttonVariants } from "./button-variants";
+import { cn } from "../utilities/utils";
+import { Button } from "../inputs/button";
+import { buttonVariants } from "../inputs/button-variants";
 
-function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
+function Pagination({
+  className,
+  ...props
+}: React.ComponentProps<"nav">) {
   return (
     <nav
       role="navigation"
@@ -59,7 +62,7 @@ function PaginationLink({
           variant: isActive ? "outline" : "ghost",
           size,
         }),
-        className,
+        className
       )}
       {...props}
     />
@@ -108,7 +111,10 @@ function PaginationEllipsis({
     <span
       aria-hidden
       data-slot="pagination-ellipsis"
-      className={cn("flex size-9 items-center justify-center", className)}
+      className={cn(
+        "flex size-9 items-center justify-center",
+        className
+      )}
       {...props}
     >
       <MoreHorizontalIcon className="size-4" />

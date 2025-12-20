@@ -4,7 +4,7 @@
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
-import { cn } from "./utils";
+import { cn } from "../utilities/utils";
 
 import {
   type Payload as RechartsPayload,

@@ -4,7 +4,7 @@ import * as React from "react";
 import * as TogglePrimitive from "@radix-ui/react-toggle";
 import { toggleVariants } from "./toggle-variants";
 
-import { cn } from "./utils";
+import { cn } from "../utilities/utils";
 
 function Toggle({
   className,
