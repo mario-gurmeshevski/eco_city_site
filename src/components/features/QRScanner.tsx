@@ -5,6 +5,7 @@ import {
 } from "../../hooks/useEcoPoints";
 import { Camera, Check, AlertCircle } from "lucide-react";
 import { Scanner } from "@yudiel/react-qr-scanner";
+import toast from "react-hot-toast";
 
 interface QRScannerProps {
   onAddActivity: (
@@ -14,8 +15,6 @@ interface QRScannerProps {
 
 export function QRScanner({ onAddActivity }: QRScannerProps) {
   const [scanning, setScanning] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
   const [manualCode, setManualCode] = useState("");
 
   const handleScan = (result: string) => {
@@ -35,24 +34,24 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
           description: `Recycling at collection point (+${points} pts)`,
         });
 
-        setShowSuccess(true);
+        toast.success(
+          `Recycling confirmed! ${points} points added successfully!`
+        );
         setManualCode("");
         setScanning(false);
-        setTimeout(() => setShowSuccess(false), 3000);
       } else {
-        setShowError(true);
-        setTimeout(() => setShowError(false), 3000);
+        toast.error("Invalid QR code format");
       }
     } else {
-      setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
+      toast.error(
+        "Invalid QR code. Please scan a valid EcoCity recycling point"
+      );
     }
   };
 
   const handleError = (error: any) => {
     console.error("QR Scanner error:", error);
-    setShowError(true);
-    setTimeout(() => setShowError(false), 3000);
+    toast.error("Camera access error. Please check permissions.");
   };
 
   const handleManualSubmit = (e: React.FormEvent) => {
@@ -68,36 +67,6 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
           Scan the QR code at recycling stations to earn points!
         </p>
       </div>
-
-      {/* Success Message */}
-      {showSuccess && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
-          <div className="bg-green-500 text-white rounded-full p-1">
-            <Check className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-green-900">Recycling confirmed!</p>
-            <p className="text-green-700 text-sm">
-              Points added successfully!
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Error Message */}
-      {showError && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3 animate-[slideIn_0.3s_ease-out]">
-          <div className="bg-red-500 text-white rounded-full p-1">
-            <AlertCircle className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-red-900">Invalid QR code</p>
-            <p className="text-red-700 text-sm">
-              Please scan a valid EcoCity recycling point
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Camera View */}
       <div className="space-y-4">
@@ -162,25 +131,6 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
             Submit Code
           </button>
         </form>
-      </div>
-
-      {/* Points Info */}
-      <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-3xl">♻️</span>
-          <div>
-            <p className="text-purple-900">Recycling Rewards</p>
-            <p className="text-purple-700 text-sm">
-              Earn {getRecyclingPoints()} points per scan
-            </p>
-          </div>
-        </div>
-        <div className="bg-white/50 rounded-lg p-3 mt-3">
-          <p className="text-purple-900 text-sm">
-            Find EcoCity recycling points near you using the map
-            feature!
-          </p>
-        </div>
       </div>
 
       {/* Instructions */}

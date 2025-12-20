@@ -63,11 +63,11 @@ export function Home({
         </div>
         <div className="mt-4 pt-4 border-t border-white/20">
           <button
-            onClick={() => onNavigate("rewards")}
+            onClick={() => onNavigate("payment")}
             className="text-white hover:text-green-100 flex items-center gap-2"
           >
             <Award className="w-4 h-4" />
-            <span>View Rewards</span>
+            <span>View Payment Options</span>
           </button>
         </div>
       </div>
@@ -90,7 +90,7 @@ export function Home({
           <p className="text-green-600">{impact.totalDistance} km</p>
         </div>
 
-        <div className="bg-blue-50 rounded-xl p-4 border border-blue-100 col-span-full text-center">
+        <div className="bg-blue-50 rounded-xl p-4 border border-blue-100 col-span-2 text-center">
           <div className="flex items-center gap-2 mb-2 justify-center">
             <span className="text-2xl">🌍</span>
             <p className="text-blue-900">CO₂ Saved</p>
@@ -133,7 +133,11 @@ export function Home({
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-green-600">+{activity.points}</p>
+                  <p className="text-green-600">
+                    {activity.points > 0
+                      ? `+${activity.points}`
+                      : activity.points}
+                  </p>{" "}
                   {activity.co2Saved && activity.co2Saved > 0 && (
                     <p className="text-xs text-gray-500">
                       {activity.co2Saved}kg CO₂

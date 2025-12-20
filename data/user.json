@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "name": "John",
+    "surname": "Doe",
+    "password": "password123",
+    "email": "john.doe@example.com",
+    "gender": "Male",
+    "age": 30,
+    "municipality": "New York",
+    "points": 135,
+    "co2saved": 23.5,
+    "distanced": 150,
+    "recyclings": 10
+  },
+  {
+    "id": 2,
+    "name": "Jane",
+    "surname": "Smith",
+    "password": "password456",
+    "email": "jane.smith@example.com",
+    "gender": "Female",
+    "age": 25,
+    "municipality": "Los Angeles",
+    "points": 108,
+    "co2saved": 23.5,
+    "distanced": 150,
+    "recyclings": 10
+  },
+  {
+    "id": 3,
+    "name": "Michael",
+    "surname": "Johnson",
+    "password": "password789",
+    "email": "michael.johnson@example.com",
+    "gender": "Male",
+    "age": 35,
+    "municipality": "Chicago",
+    "points": 218,
+    "co2saved": 23.5,
+    "distanced": 150,
+    "recyclings": 10
+  },
+  {
+    "id": 4,
+    "name": "Sarah",
+    "surname": "Williams",
+    "password": "password101",
+    "email": "sarah.williams@example.com",
+    "gender": "Female",
+    "age": 28,
+    "municipality": "Houston",
+    "points": 126,
+    "co2saved": 23.5,
+    "distanced": 150,
+    "recyclings": 10
+  }
+]
