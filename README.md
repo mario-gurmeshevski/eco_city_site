@@ -7,10 +7,11 @@
 
 ## Problem
 Environmental pollution is a growing concern, especially in urban and student communities. Key issues include:
+
 - Burning of tires and plastics
 - Low recycling participation
 - Overuse of personal vehicles
-- Lack of motivation and incentives for sustainable behavior  
+- Lack of motivation and incentives for sustainable behavior
 
 Many individuals want to act sustainably but lack **simple tools** and **reward-based motivation** to do so.
 
@@ -30,6 +31,7 @@ EcoCity provides a **gamified sustainability platform** where users can track ec
 
 ## Innovation
 What makes EcoCity unique:
+
 - Introduces **EcoCity as a digital eco-currency**, not just statistics.
 - Connects **real-world actions** with **digital rewards**.
 - Combines **gamification, sustainability, and mapping** in one platform.
@@ -87,5 +89,5 @@ Users can log in, record eco-friendly actions, earn EcoCity points, view recycli
   - Recycling (QR Scan)  
   - Recycling Map  
 
-- **Demo Video:** _[Add demo video link]_  
-- **Live Demo:** _[Add live demo link, if available]_  
+- **Demo Video:** _[Add demo video link]_
+- **Live Demo:** _[Add live demo link, if available]_

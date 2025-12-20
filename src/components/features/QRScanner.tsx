@@ -1,70 +1,38 @@
-import { useState, useEffect, useRef } from 'react';
-import {type Activity, getRecyclingPoints } from '../../hooks/useEcoPoints';
-import { Camera, Check, AlertCircle } from 'lucide-react';
+import { useState } from "react";
+import {
+  type Activity,
+  getRecyclingPoints,
+} from "../../hooks/useEcoPoints";
+import { Camera, Check, AlertCircle } from "lucide-react";
+import { Scanner } from "@yudiel/react-qr-scanner";
 
 interface QRScannerProps {
-  onAddActivity: (activity: Omit<Activity, 'id' | 'timestamp'>) => void;
+  onAddActivity: (
+    activity: Omit<Activity, "id" | "timestamp">
+  ) => void;
 }
 
 export function QRScanner({ onAddActivity }: QRScannerProps) {
   const [scanning, setScanning] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
-  const [manualCode, setManualCode] = useState('');
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const [manualCode, setManualCode] = useState("");
 
-  useEffect(() => {
-    return () => {
-      // Cleanup camera stream on unmount
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, []);
+  const handleScan = (result: string) => {
+    if (!result || result.trim() === "") return;
 
-  const startScanning = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' }
-      });
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        streamRef.current = stream;
-        setScanning(true);
-      }
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-      setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
-    }
-  };
-
-  const stopScanning = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-    setScanning(false);
-  };
-
-  const handleScan = (code: string) => {
-    if (!code || code.trim() === '') return;
-
-    // Validate QR code (in a real app, this would verify with a backend)
-    if (code.startsWith('ECOCITY_RECYCLE_')) {
+    if (result.startsWith("ECOCITY_RECYCLE_")) {
       const points = getRecyclingPoints();
-      
+
       onAddActivity({
-        type: 'recycling',
+        type: "recycling",
         points,
-        description: 'Recycling at collection point',
+        description: "Recycling at collection point",
       });
 
       setShowSuccess(true);
-      setManualCode('');
-      stopScanning();
+      setManualCode("");
+      setScanning(false);
       setTimeout(() => setShowSuccess(false), 3000);
     } else {
       setShowError(true);
@@ -72,21 +40,24 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
     }
   };
 
+  const handleError = (error: any) => {
+    console.error("QR Scanner error:", error);
+    setShowError(true);
+    setTimeout(() => setShowError(false), 3000);
+  };
+
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleScan(manualCode);
-  };
-
-  // Simulate QR scan (in a real app, you would use a QR code library)
-  const simulateScan = () => {
-    handleScan('ECOCITY_RECYCLE_' + Date.now());
   };
 
   return (
     <div className="p-4 space-y-6">
       <div>
         <h2 className="mb-2">Scan Recycling Point</h2>
-        <p className="text-gray-600">Scan the QR code at recycling stations to earn points!</p>
+        <p className="text-gray-600">
+          Scan the QR code at recycling stations to earn points!
+        </p>
       </div>
 
       {/* Success Message */}
@@ -97,7 +68,9 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
           </div>
           <div>
             <p className="text-green-900">Recycling confirmed!</p>
-            <p className="text-green-700 text-sm">+{getRecyclingPoints()} points added</p>
+            <p className="text-green-700 text-sm">
+              +{getRecyclingPoints()} points added
+            </p>
           </div>
         </div>
       )}
@@ -110,7 +83,9 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
           </div>
           <div>
             <p className="text-red-900">Invalid QR code</p>
-            <p className="text-red-700 text-sm">Please scan a valid EcoCity recycling point</p>
+            <p className="text-red-700 text-sm">
+              Please scan a valid EcoCity recycling point
+            </p>
           </div>
         </div>
       )}
@@ -118,25 +93,26 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
       {/* Camera View */}
       <div className="space-y-4">
         {scanning ? (
-          <div className="relative bg-black rounded-2xl overflow-hidden aspect-square">
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              className="w-full h-full object-cover"
+          <div
+            className="relative bg-black rounded-2xl overflow-hidden aspect-square"
+            style={{ width: "100%", height: "100%" }}
+          >
+            <Scanner
+              onScan={(detectedCodes) => {
+                if (detectedCodes.length > 0) {
+                  handleScan(detectedCodes[0].rawValue);
+                }
+              }}
+              onError={handleError}
+              scanDelay={500}
+              constraints={{ facingMode: "environment" }}
             />
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="border-4 border-white w-64 h-64 rounded-2xl shadow-lg opacity-50"></div>
             </div>
             <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3">
               <button
-                onClick={simulateScan}
-                className="bg-green-600 text-white px-6 py-3 rounded-xl shadow-lg hover:bg-green-700 transition-colors"
-              >
-                Simulate Scan
-              </button>
-              <button
-                onClick={stopScanning}
+                onClick={() => setScanning(false)}
                 className="bg-red-600 text-white px-6 py-3 rounded-xl shadow-lg hover:bg-red-700 transition-colors"
               >
                 Stop Camera
@@ -145,13 +121,15 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
           </div>
         ) : (
           <button
-            onClick={startScanning}
-            className="w-full bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-8 flex flex-col items-center gap-4 hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl"
+            onClick={() => setScanning(true)}
+            className="w-full bg-linear-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-8 flex flex-col items-center gap-4 hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl"
           >
             <Camera className="w-16 h-16" />
             <div>
               <p className="text-xl mb-1">Start Camera</p>
-              <p className="text-green-100 text-sm">Scan QR code at recycling point</p>
+              <p className="text-green-100 text-sm">
+                Scan QR code at recycling point
+              </p>
             </div>
           </button>
         )}
@@ -178,17 +156,20 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
       </div>
 
       {/* Points Info */}
-      <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
+      <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
         <div className="flex items-center gap-3 mb-3">
           <span className="text-3xl">♻️</span>
           <div>
             <p className="text-purple-900">Recycling Rewards</p>
-            <p className="text-purple-700 text-sm">Earn {getRecyclingPoints()} points per scan</p>
+            <p className="text-purple-700 text-sm">
+              Earn {getRecyclingPoints()} points per scan
+            </p>
           </div>
         </div>
         <div className="bg-white/50 rounded-lg p-3 mt-3">
           <p className="text-purple-900 text-sm">
-            Find EcoCity recycling points near you using the map feature!
+            Find EcoCity recycling points near you using the map
+            feature!
           </p>
         </div>
       </div>
@@ -198,14 +179,31 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
         <p className="text-gray-700">How it works:</p>
         <div className="space-y-2">
           {[
-            { icon: '1️⃣', text: 'Find an EcoCity recycling point on the map' },
-            { icon: '2️⃣', text: 'Bring your recyclables to the location' },
-            { icon: '3️⃣', text: 'Scan the QR code at the recycling station' },
-            { icon: '4️⃣', text: 'Earn instant points and help the planet!' },
+            {
+              icon: "1️⃣",
+              text: "Find an EcoCity recycling point on the map",
+            },
+            {
+              icon: "2️⃣",
+              text: "Bring your recyclables to the location",
+            },
+            {
+              icon: "3️⃣",
+              text: "Scan the QR code at the recycling station",
+            },
+            {
+              icon: "4️⃣",
+              text: "Earn instant points and help the planet!",
+            },
           ].map((step, i) => (
-            <div key={i} className="flex items-start gap-3 bg-white border border-gray-200 rounded-lg p-3">
+            <div
+              key={i}
+              className="flex items-start gap-3 bg-white border border-gray-200 rounded-lg p-3"
+            >
               <span className="text-xl">{step.icon}</span>
-              <p className="text-gray-700 text-sm pt-1">{step.text}</p>
+              <p className="text-gray-700 text-sm pt-1">
+                {step.text}
+              </p>
             </div>
           ))}
         </div>
