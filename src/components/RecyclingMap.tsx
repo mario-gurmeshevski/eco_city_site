@@ -70,14 +70,11 @@ const mockRecyclingPoints: RecyclingPoint[] = [
 ];
 
 export function RecyclingMap() {
-  const [points, setPoints] = useState<RecyclingPoint[]>([]);
+  const [points] = useState<RecyclingPoint[]>(mockRecyclingPoints);
   const [selectedPoint, setSelectedPoint] = useState<RecyclingPoint | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
-    // Load recycling points
-    setPoints(mockRecyclingPoints);
-
     // Get user location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
