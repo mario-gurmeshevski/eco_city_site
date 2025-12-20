@@ -7,7 +7,7 @@ interface RecyclingPoint {
   address: string;
   lat: number;
   lng: number;
-  type: 'center' | 'bin' | 'station';
+  type: 'plasticRecycling' | 'tyreRecycling' | 'batteryRecycling';
   hours?: string;
   phone?: string;
   distance?: number;
@@ -17,54 +17,54 @@ interface RecyclingPoint {
 const mockRecyclingPoints: RecyclingPoint[] = [
   {
     id: '1',
-    name: 'Central Recycling Center',
+    name: 'Vero Center Pakomak',
     address: '123 Green Street, Downtown',
     lat: 40.7128,
     lng: -74.0060,
-    type: 'center',
+    type: 'plasticRecycling',
     hours: 'Mon-Fri: 8AM-6PM, Sat: 9AM-4PM',
     phone: '+1 (555) 123-4567',
     distance: 0.5,
   },
   {
     id: '2',
-    name: 'Park Side Collection Point',
+    name: 'Ramstore Mall Battery Recycling',
     address: '456 Park Avenue',
     lat: 40.7580,
     lng: -73.9855,
-    type: 'station',
-    hours: '24/7',
+    type: 'batteryRecycling',
+    hours: 'Mon-Fri: 8AM-6PM, Sat: 9AM-4PM',
     distance: 1.2,
   },
   {
     id: '3',
-    name: 'Community Recycling Bin',
+    name: 'Gumatek Chair',
     address: '789 Oak Road',
     lat: 40.7489,
     lng: -73.9680,
-    type: 'bin',
-    hours: '24/7',
-    distance: 2.1,
+    type: 'tyreRecycling',
+    hours: 'Mon-Fri: 8AM-6PM, Sat: 9AM-4PM',
+    distance: 0.9,
   },
   {
     id: '4',
-    name: 'EcoCity Hub',
+    name: 'Diamond Mall Battery Recycling',
     address: '321 Elm Street',
     lat: 40.7614,
     lng: -73.9776,
-    type: 'center',
+    type: 'batteryRecycling',
     hours: 'Mon-Sun: 7AM-8PM',
     phone: '+1 (555) 987-6543',
-    distance: 0.8,
+    distance: 1.2,
   },
   {
     id: '5',
-    name: 'Riverside Collection Station',
+    name: 'East Gate Mall Plastic Recycling',
     address: '654 River Road',
     lat: 40.7282,
     lng: -73.9942,
-    type: 'station',
-    hours: 'Mon-Sat: 6AM-10PM',
+    type: 'plasticRecycling',
+    hours: 'Mon-Sat: 7AM-10PM',
     distance: 1.5,
   },
 ];
@@ -93,9 +93,9 @@ export function RecyclingMap() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'center': return '🏢';
-      case 'station': return '♻️';
-      case 'bin': return '🗑️';
+      case 'tyreRecycling': return '🔘';
+      case 'plasticRecycling': return '♻️';
+      case 'batteryRecycling': return '🔋';
       default: return '📍';
     }
   };
@@ -217,7 +217,7 @@ export function RecyclingMap() {
         <p className="text-sm text-gray-600 mb-2">Location Types:</p>
         <div className="flex flex-wrap gap-3">
           <div className="flex items-center gap-2">
-            <span>🏢</span>
+            <span>🔘</span>
             <span className="text-sm text-gray-700">Recycling Center</span>
           </div>
           <div className="flex items-center gap-2">
@@ -225,7 +225,7 @@ export function RecyclingMap() {
             <span className="text-sm text-gray-700">Collection Station</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>🗑️</span>
+            <span>🔋</span>
             <span className="text-sm text-gray-700">Recycling Bin</span>
           </div>
         </div>
