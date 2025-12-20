@@ -21,19 +21,28 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
   const handleScan = (result: string) => {
     if (!result || result.trim() === "") return;
 
+    // Check if it starts with the prefix
     if (result.startsWith("ECOCITY_RECYCLE_")) {
-      const points = getRecyclingPoints();
+      // Extract the number from the string
+      const pointsMatch = result.match(/\d+$/); // Gets digits at the end
 
-      onAddActivity({
-        type: "recycling",
-        points,
-        description: "Recycling at collection point",
-      });
+      if (pointsMatch) {
+        const points = parseInt(pointsMatch[0]);
 
-      setShowSuccess(true);
-      setManualCode("");
-      setScanning(false);
-      setTimeout(() => setShowSuccess(false), 3000);
+        onAddActivity({
+          type: "recycling",
+          points: points, // Use extracted points
+          description: `Recycling at collection point (+${points} pts)`,
+        });
+
+        setShowSuccess(true);
+        setManualCode("");
+        setScanning(false);
+        setTimeout(() => setShowSuccess(false), 3000);
+      } else {
+        setShowError(true);
+        setTimeout(() => setShowError(false), 3000);
+      }
     } else {
       setShowError(true);
       setTimeout(() => setShowError(false), 3000);
@@ -62,14 +71,14 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
 
       {/* Success Message */}
       {showSuccess && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3 animate-[slideIn_0.3s_ease-out]">
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
           <div className="bg-green-500 text-white rounded-full p-1">
             <Check className="w-5 h-5" />
           </div>
           <div>
             <p className="text-green-900">Recycling confirmed!</p>
             <p className="text-green-700 text-sm">
-              +{getRecyclingPoints()} points added
+              Points added successfully!
             </p>
           </div>
         </div>
