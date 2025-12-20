@@ -1,7 +1,7 @@
 # 🌱 EcoCity – Rewarding Sustainable Habits
 
 ## Project Name & Short Description
-**EcoCity** is a web application that encourages sustainable behavior by rewarding users with **EcoCity** for eco-friendly habits such as using public transport and recycling. These points function as a **digital eco-currency**, motivating users to make environmentally conscious choices through gamification.
+**EcoCity** is a mobile application that encourages sustainable behavior by rewarding users with **EcoPoints** for eco-friendly habits such as using public transport and recycling. These points function as a **digital eco-currency**, motivating users to make environmentally conscious choices through gamification.
 
 ---
 
