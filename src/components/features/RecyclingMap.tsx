@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { MapPin, Navigation, Phone, Clock } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { MapPin, Navigation, Phone, Clock } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface RecyclingPoint {
   id: string;
@@ -71,8 +72,12 @@ const mockRecyclingPoints: RecyclingPoint[] = [
 
 export function RecyclingMap() {
   const [points] = useState<RecyclingPoint[]>(mockRecyclingPoints);
-  const [selectedPoint, setSelectedPoint] = useState<RecyclingPoint | null>(null);
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [selectedPoint, setSelectedPoint] =
+    useState<RecyclingPoint | null>(null);
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   useEffect(() => {
     // Get user location
@@ -85,9 +90,14 @@ export function RecyclingMap() {
           });
         },
         (error) => {
-          console.error('Error getting location:', error);
+          console.error("Error getting location:", error);
+          toast.error(
+            "Unable to get your location. Please enable location services."
+          );
         }
       );
+    } else {
+      toast.error("Geolocation is not supported by your browser.");
     }
   }, []);
 
@@ -102,35 +112,43 @@ export function RecyclingMap() {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'center': return 'bg-blue-100 border-blue-300 text-blue-900';
-      case 'station': return 'bg-green-100 border-green-300 text-green-900';
-      case 'bin': return 'bg-gray-100 border-gray-300 text-gray-900';
-      default: return 'bg-purple-100 border-purple-300 text-purple-900';
+      case "center":
+        return "bg-blue-100 border-blue-300 text-blue-900";
+      case "station":
+        return "bg-green-100 border-green-300 text-green-900";
+      case "bin":
+        return "bg-gray-100 border-gray-300 text-gray-900";
+      default:
+        return "bg-purple-100 border-purple-300 text-purple-900";
     }
   };
 
   const openDirections = (point: RecyclingPoint) => {
     const url = `https://www.google.com/maps/dir/?api=1&destination=${point.lat},${point.lng}`;
-    window.open(url, '_blank');
+    window.open(url, "_blank");
   };
 
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
       {/* Map Placeholder */}
-      <div className="relative bg-gradient-to-br from-green-100 to-blue-100 h-64 flex-shrink-0">
+      <div className="relative bg-linear-to-br from-green-100 to-blue-100 h-64 shrink-0">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <MapPin className="w-16 h-16 text-green-600 mx-auto mb-2" />
             <p className="text-gray-700">Interactive Map View</p>
-            <p className="text-gray-500 text-sm mt-1">Showing {points.length} recycling points</p>
+            <p className="text-gray-500 text-sm mt-1">
+              Showing {points.length} recycling points
+            </p>
           </div>
         </div>
-        
+
         {/* User Location Indicator */}
         {userLocation && (
           <div className="absolute top-4 right-4 bg-white rounded-full px-3 py-2 shadow-lg flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-            <span className="text-sm text-gray-700">Your location</span>
+            <span className="text-sm text-gray-700">
+              Your location
+            </span>
           </div>
         )}
 
@@ -146,24 +164,34 @@ export function RecyclingMap() {
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         <div className="flex items-center justify-between mb-4">
           <h3>Nearby Recycling Points</h3>
-          <span className="text-sm text-gray-500">{points.length} locations</span>
+          <span className="text-sm text-gray-500">
+            {points.length} locations
+          </span>
         </div>
 
         {points.map((point) => (
           <div
             key={point.id}
-            onClick={() => setSelectedPoint(selectedPoint?.id === point.id ? null : point)}
+            onClick={() =>
+              setSelectedPoint(
+                selectedPoint?.id === point.id ? null : point
+              )
+            }
             className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${
               selectedPoint?.id === point.id
-                ? 'border-green-500 bg-green-50 shadow-lg'
-                : 'border-gray-200 bg-white hover:border-green-300 hover:shadow-md'
+                ? "border-green-500 bg-green-50 shadow-lg"
+                : "border-gray-200 bg-white hover:border-green-300 hover:shadow-md"
             }`}
           >
             <div className="flex items-start gap-3">
-              <div className={`text-3xl p-2 rounded-lg border ${getTypeColor(point.type)}`}>
+              <div
+                className={`text-3xl p-2 rounded-lg border ${getTypeColor(
+                  point.type
+                )}`}
+              >
                 {getTypeIcon(point.type)}
               </div>
-              
+
               <div className="flex-1">
                 <div className="flex items-start justify-between mb-1">
                   <h4 className="text-gray-900">{point.name}</h4>
@@ -173,9 +201,11 @@ export function RecyclingMap() {
                     </span>
                   )}
                 </div>
-                
-                <p className="text-gray-600 text-sm mb-2">{point.address}</p>
-                
+
+                <p className="text-gray-600 text-sm mb-2">
+                  {point.address}
+                </p>
+
                 {selectedPoint?.id === point.id && (
                   <div className="space-y-2 mt-3 pt-3 border-t border-gray-200">
                     {point.hours && (
@@ -184,16 +214,19 @@ export function RecyclingMap() {
                         <span>{point.hours}</span>
                       </div>
                     )}
-                    
+
                     {point.phone && (
                       <div className="flex items-center gap-2 text-sm text-gray-700">
                         <Phone className="w-4 h-4 text-gray-500" />
-                        <a href={`tel:${point.phone}`} className="text-blue-600 hover:underline">
+                        <a
+                          href={`tel:${point.phone}`}
+                          className="text-blue-600 hover:underline"
+                        >
                           {point.phone}
                         </a>
                       </div>
                     )}
-                    
+
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -213,7 +246,7 @@ export function RecyclingMap() {
       </div>
 
       {/* Legend */}
-      <div className="border-t border-gray-200 p-4 bg-gray-50 flex-shrink-0">
+      <div className="border-t border-gray-200 p-4 bg-gray-50 shrink-0">
         <p className="text-sm text-gray-600 mb-2">Location Types:</p>
         <div className="flex flex-wrap gap-3">
           <div className="flex items-center gap-2">
@@ -222,7 +255,9 @@ export function RecyclingMap() {
           </div>
           <div className="flex items-center gap-2">
             <span>♻️</span>
-            <span className="text-sm text-gray-700">Collection Station</span>
+            <span className="text-sm text-gray-700">
+              Collection Station
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <span>🔋</span>
