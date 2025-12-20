@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {type TransportType, type Activity, calculateTransportPoints } from '../hooks/useEcoPoints';
+import {type TransportType, type Activity, calculateTransportPoints } from '../../hooks/useEcoPoints';
 import { Check } from 'lucide-react';
 
 interface TransportTrackingProps {

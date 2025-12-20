@@ -2,7 +2,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { buttonVariants, type ButtonVariantProps } from "./button-variants";
 
-import { cn } from "./utils";
+import { cn } from "../../utilities/utils";
 
 function Button({
   className,

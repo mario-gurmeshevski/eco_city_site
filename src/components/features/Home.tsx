@@ -1,5 +1,5 @@
-import type {Activity, Impact} from '../hooks/useEcoPoints';
-import { type Screen } from '../App';
+import type {Activity, Impact} from '../../hooks/useEcoPoints';
+import { type Screen } from '../../App';
 import { Leaf, TrendingUp, Award, Calendar } from 'lucide-react';
 
 interface HomeProps {

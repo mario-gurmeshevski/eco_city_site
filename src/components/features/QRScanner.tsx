@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import {type Activity, getRecyclingPoints } from '../hooks/useEcoPoints';
+import {type Activity, getRecyclingPoints } from '../../hooks/useEcoPoints';
 import { Camera, Check, AlertCircle } from 'lucide-react';
 
 interface QRScannerProps {

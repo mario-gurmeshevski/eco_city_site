@@ -1,4 +1,4 @@
-import { type Screen } from '../App';
+import { type Screen } from '../../App';
 import { Home, MapPin, Gift, QrCode, Navigation } from 'lucide-react';
 
 interface BottomNavProps {
