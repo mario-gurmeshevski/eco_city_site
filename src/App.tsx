@@ -6,7 +6,7 @@ import { RecyclingMap } from "./components/features/RecyclingMap";
 import { Rewards } from "./components/features/Rewards";
 import { BottomNav } from "./components/features/BottomNav";
 import { useEcoPoints } from "./hooks/useEcoPoints";
-import LOGO1 from "../public/Logo1.png";
+import LOGO1 from "/Logo1.png";
 
 export type Screen = "home" | "transport" | "qr" | "map" | "rewards";
 
