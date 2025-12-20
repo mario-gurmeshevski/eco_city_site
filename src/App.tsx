@@ -6,6 +6,7 @@ import { RecyclingMap } from "./components/features/RecyclingMap";
 import { Rewards } from "./components/features/Rewards";
 import { BottomNav } from "./components/features/BottomNav";
 import { useEcoPoints } from "./hooks/useEcoPoints";
+import LOGO1 from "../public/Logo1.png";
 
 export type Screen = "home" | "transport" | "qr" | "map" | "rewards";
 
@@ -19,8 +20,12 @@ export default function App() {
         {/* Header */}
         <header className="bg-linear-to-r from-green-600 to-emerald-600 text-white p-4 sticky top-0 z-10 shadow-md">
           <div className="flex items-center justify-between">
-            <h1>EcoCity</h1>
-            <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
+              <img
+                  src={LOGO1}
+                  alt="EcoCity logo"
+                  className="w-20 h-auto"
+              />
+              <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
               <span>🌿</span>
               <span>{points.toLocaleString()} pts</span>
             </div>
