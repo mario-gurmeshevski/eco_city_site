@@ -246,7 +246,7 @@ export function TransportTracking({
   return (
     <div className="p-4 space-y-6">
       <div>
-        <h2 className="mb-2 text-2xl font-bold">Log Your Trip</h2>
+        <h2 className="mb-2 text-2xl font-bold">View Your Trips</h2>
         <p className="text-gray-600">
           Track your eco-friendly transportation and earn points!
         </p>
