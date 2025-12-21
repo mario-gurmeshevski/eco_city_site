@@ -97,11 +97,15 @@ Users can log in, record eco-friendly actions, earn EcoCity points, view recycli
 - **Screenshots:**
 
   - Dashboard
-    <img width="565" height="921" alt="image" src="https://github.com/user-attachments/assets/d8d8dfbb-b339-46eb-bdb6-e1f9a1e70113" />
-  - Transport Logging
-    
+    <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/d8d8dfbb-b339-46eb-bdb6-e1f9a1e70113" />
+  - Transport Viewing
+    <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/6527e78e-a6ef-4585-8f79-2bb984fdd5b9" />
   - Recycling (QR Scan)
+    <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/3fbefbf8-21ea-4b45-b0cb-10b3bf6391fa" />
   - Recycling Map
+    <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/27d2e004-b02d-4cdc-a799-649db05d65d9" />
+  - Payment
+    <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/b45c6dff-f037-4f67-a0e2-ca5835115cad" />
 
-- **Demo Video:** _[Add demo video link]_
-- **Live Demo:** _[Add live demo link, if available]_
+- **Demo Video:**
+  
