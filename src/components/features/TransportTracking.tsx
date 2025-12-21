@@ -89,9 +89,6 @@ export function TransportTracking({
         const currentUserData = localStorage.getItem("currentUser");
         const newUserData = localStorage.getItem("userTransportData");
 
-        console.log("🔍 currentUser data:", currentUserData);
-        console.log("🔍 userTransportData:", newUserData);
-
         let finalData: UserData = {
           walking: [],
           biking: [],
@@ -101,7 +98,6 @@ export function TransportTracking({
 
         if (currentUserData) {
           const currentUser = JSON.parse(currentUserData);
-          console.log("📊 Parsed currentUser:", currentUser);
 
           finalData = {
             walking: currentUser.walking || [],
@@ -109,7 +105,6 @@ export function TransportTracking({
             public_transport: currentUser.public_transport || [],
             car: currentUser.car || [],
           };
-          console.log("✅ Extracted transport data:", finalData);
         }
 
         if (newUserData) {
@@ -142,9 +137,6 @@ export function TransportTracking({
           const seenDates = new Set<string>();
           finalData[key] = trips.filter((trip) => {
             if (seenDates.has(trip.date)) {
-              console.log(
-                `⏭️ Skipping duplicate ${key} trip on ${trip.date}`
-              );
               return false;
             }
             seenDates.add(trip.date);
@@ -152,16 +144,13 @@ export function TransportTracking({
           });
         });
 
-        console.log("🎉 FINAL TRANSPORT DATA:", finalData);
-        console.log("✅ Walking count:", finalData.walking.length);
-
         localStorage.setItem(
           "userTransportData",
           JSON.stringify(finalData)
         );
         setUserTransportData(finalData);
       } catch (error) {
-        console.error("❌ Error loading transport data:", error);
+        console.error("Error loading transport data:", error);
       }
     };
 
@@ -175,10 +164,6 @@ export function TransportTracking({
     type: TransportType
   ): TransportData[] => {
     const history = userTransportData[getTransportKey(type)] || [];
-    console.log(
-      `📈 ${type} history (${history.length} trips):`,
-      history
-    );
     return history;
   };
 

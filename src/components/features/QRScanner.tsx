@@ -13,15 +13,17 @@ interface QRScannerProps {
 export function QRScanner({ onAddActivity }: QRScannerProps) {
   const [scanning, setScanning] = useState(false);
   const [manualCode, setManualCode] = useState("");
+  const [paused, setPaused] = useState(false);
 
   const handleScan = (result: string) => {
-    if (!result || result.trim() === "") return;
+    if (!result || result.trim() === "" || paused) return;
+
+    setPaused(true); // Prevent multiple scans
 
     const cleanResult = result.trim();
+    console.log("Scanned code:", cleanResult); // Debug log
 
-    // Check if it starts with the prefix
     if (cleanResult.startsWith("ECOCITY_RECYCLE_")) {
-      // Extract the number from the string after ECOCITY_RECYCLE_
       const pointsMatch = cleanResult.match(/ECOCITY_RECYCLE_(\d+)$/);
 
       if (pointsMatch) {
@@ -29,7 +31,7 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
 
         onAddActivity({
           type: "recycling",
-          recyclingType: "bottle", // Required by useEcoPoints
+          recyclingType: "bottle",
           points: points,
           description: `Recycling at collection point (+${points} pts)`,
         });
@@ -39,19 +41,35 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
         );
         setManualCode("");
         setScanning(false);
+        setPaused(false);
       } else {
         toast.error("Invalid QR code format");
+        setPaused(false);
       }
     } else {
       toast.error(
         "Invalid QR code. Please scan a valid EcoCity recycling point"
       );
+      // Allow scanning again after 2 seconds
+      setTimeout(() => setPaused(false), 2000);
     }
   };
 
   const handleError = (error: any) => {
-    console.error("QR Scanner error:", error);
-    toast.error("Camera access error. Please check permissions.");
+    console.error("Scanner error:", error);
+    if (error?.name === "NotAllowedError") {
+      toast.error(
+        "Camera permission denied. Please allow camera access."
+      );
+    } else if (error?.name === "NotFoundError") {
+      toast.error("No camera found on this device.");
+    } else if (error?.name === "NotReadableError") {
+      toast.error("Camera is already in use by another application.");
+    } else {
+      toast.error(
+        "Camera error. Please try again or enter code manually."
+      );
+    }
   };
 
   const handleManualSubmit = (e: React.FormEvent) => {
@@ -71,26 +89,70 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
       {/* Camera View */}
       <div className="space-y-4">
         {scanning ? (
-          <div
-            className="relative bg-black rounded-2xl overflow-hidden aspect-square"
-            style={{ width: "100%", height: "100%" }}
-          >
-            <Scanner
-              onScan={(detectedCodes) => {
-                if (detectedCodes.length > 0) {
-                  handleScan(detectedCodes[0].rawValue);
-                }
-              }}
-              onError={handleError}
-              scanDelay={500}
-              constraints={{ facingMode: "environment" }}
-            />
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="border-4 border-white w-64 h-64 rounded-2xl shadow-lg opacity-50"></div>
+          <div className="relative bg-black rounded-2xl overflow-hidden w-full max-w-md mx-auto">
+            <div style={{ position: "relative", paddingTop: "100%" }}>
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                }}
+              >
+                <Scanner
+                  onScan={(detectedCodes) => {
+                    console.log("Detected codes:", detectedCodes); // Debug log
+                    if (
+                      detectedCodes &&
+                      detectedCodes.length > 0 &&
+                      !paused
+                    ) {
+                      handleScan(detectedCodes[0].rawValue);
+                    }
+                  }}
+                  onError={handleError}
+                  formats={["qr_code"]}
+                  paused={paused}
+                  scanDelay={1000}
+                  constraints={{
+                    facingMode: "environment",
+                    aspectRatio: 1,
+                  }}
+                  components={{
+                    onOff: false,
+                    torch: false,
+                    zoom: false,
+                    finder: false,
+                    tracker: undefined,
+                  }}
+                  styles={{
+                    container: {
+                      width: "100%",
+                      height: "100%",
+                    },
+                    video: {
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    },
+                  }}
+                  allowMultiple={false}
+                />
+              </div>
             </div>
+
+            {/* Finder overlay */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="border-4 border-white w-48 h-48 rounded-2xl shadow-lg opacity-70"></div>
+            </div>
+
             <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3">
               <button
-                onClick={() => setScanning(false)}
+                onClick={() => {
+                  setScanning(false);
+                  setPaused(false);
+                }}
                 className="bg-red-600 text-white px-6 py-3 rounded-xl shadow-lg hover:bg-red-700 transition-colors"
               >
                 Stop Camera
