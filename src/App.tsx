@@ -10,7 +10,7 @@ import { Home } from "./components/features/Home";
 import { TransportTracking } from "./components/features/TransportTracking";
 import { QRScanner } from "./components/features/QRScanner";
 import { RecyclingMap } from "./components/features/RecyclingMap";
-import { Payment } from "./components/features/Payment";
+import Payment from "./components/features/Payment";
 import { BottomNav } from "./components/features/BottomNav";
 import Login from "./components/features/Login";
 import Register from "./components/features/Register";
