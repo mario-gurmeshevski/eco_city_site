@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   type TransportType,
   type Activity,
   calculateTransportPoints,
 } from "../../hooks/useEcoPoints";
-import { Check } from "lucide-react";
+import { Calendar, MapPin } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface TransportTrackingProps {
@@ -40,16 +40,158 @@ const transportOptions = [
   },
 ];
 
+type TransportData = {
+  traveled: number;
+  date: string;
+};
+
+interface UserData {
+  walking: TransportData[];
+  biking: TransportData[];
+  public_transport: TransportData[];
+  car: TransportData[];
+}
+
 export function TransportTracking({
   onAddActivity,
 }: TransportTrackingProps) {
   const [selectedType, setSelectedType] =
     useState<TransportType>("walking");
   const [distance, setDistance] = useState("");
+  const [userTransportData, setUserTransportData] =
+    useState<UserData>({
+      walking: [],
+      biking: [],
+      public_transport: [],
+      car: [],
+    });
+
+  const getTransportKey = (type: TransportType): keyof UserData => {
+    const keyMap: Record<TransportType, keyof UserData> = {
+      walking: "walking",
+      biking: "biking",
+      public: "public_transport",
+      car: "car",
+    };
+    return keyMap[type];
+  };
+
+  useEffect(() => {
+    const loadTransportData = () => {
+      try {
+        const currentUserData = localStorage.getItem("currentUser");
+        const newUserData = localStorage.getItem("userTransportData");
+
+        console.log("🔍 currentUser data:", currentUserData);
+        console.log("🔍 userTransportData:", newUserData);
+
+        let finalData: UserData = {
+          walking: [],
+          biking: [],
+          public_transport: [],
+          car: [],
+        };
+
+        // 1. Load from currentUser (your JSON data)
+        if (currentUserData) {
+          const currentUser = JSON.parse(currentUserData);
+          console.log("📊 Parsed currentUser:", currentUser);
+
+          finalData = {
+            walking: currentUser.walking || [],
+            biking: currentUser.biking || [],
+            public_transport: currentUser.public_transport || [],
+            car: currentUser.car || [],
+          };
+          console.log("✅ Extracted transport data:", finalData);
+        }
+
+        // 2. Merge with existing userTransportData
+        if (newUserData) {
+          const newParsed = JSON.parse(newUserData);
+          finalData = {
+            walking: [
+              ...finalData.walking,
+              ...(newParsed.walking || []),
+            ],
+            biking: [
+              ...finalData.biking,
+              ...(newParsed.biking || []),
+            ],
+            public_transport: [
+              ...finalData.public_transport,
+              ...(newParsed.public_transport || []),
+            ],
+            car: [...finalData.car, ...(newParsed.car || [])],
+          };
+        }
+
+        // Each type maintains its own date uniqueness
+        const transportKeys: (keyof UserData)[] = [
+          "walking",
+          "biking",
+          "public_transport",
+          "car",
+        ];
+        transportKeys.forEach((key) => {
+          const trips = finalData[key];
+          const seenDates = new Set<string>();
+          finalData[key] = trips.filter((trip) => {
+            if (seenDates.has(trip.date)) {
+              console.log(
+                `⏭️ Skipping duplicate ${key} trip on ${trip.date}`
+              );
+              return false;
+            }
+            seenDates.add(trip.date);
+            return true;
+          });
+        });
+
+        console.log("🎉 FINAL TRANSPORT DATA:", finalData);
+        console.log("✅ Walking count:", finalData.walking.length);
+
+        localStorage.setItem(
+          "userTransportData",
+          JSON.stringify(finalData)
+        );
+        setUserTransportData(finalData);
+      } catch (error) {
+        console.error("❌ Error loading transport data:", error);
+      }
+    };
+
+    loadTransportData();
+    const interval = setInterval(loadTransportData, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const getTransportHistory = (
+    type: TransportType
+  ): TransportData[] => {
+    const history = userTransportData[getTransportKey(type)] || [];
+    console.log(
+      `📈 ${type} history (${history.length} trips):`,
+      history
+    );
+    return history;
+  };
+
+  const saveTransportData = (newData: UserData) => {
+    try {
+      localStorage.setItem(
+        "userTransportData",
+        JSON.stringify(newData)
+      );
+      setUserTransportData(newData);
+    } catch (error) {
+      console.error("Error saving transport data:", error);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     const distanceNum = parseFloat(distance);
     if (isNaN(distanceNum) || distanceNum <= 0) return;
 
@@ -69,10 +211,23 @@ export function TransportTracking({
       } - ${distanceNum}km`,
     });
 
-    // Show success message
-    toast.success(
-      `Trip logged successfully! ${points} points added to your account`
-    );
+    const today = new Date().toLocaleDateString("en-GB");
+    const transportKey = getTransportKey(selectedType);
+    const newTrip: TransportData = {
+      traveled: distanceNum,
+      date: today,
+    };
+
+    const updatedData = {
+      ...userTransportData,
+      [transportKey]: [
+        ...(userTransportData[transportKey] || []),
+        newTrip,
+      ],
+    };
+
+    saveTransportData(updatedData);
+    toast.success(`Trip logged! ${points} points added`);
     setDistance("");
   };
 
@@ -89,19 +244,28 @@ export function TransportTracking({
       ).co2Saved
     : 0;
 
+  const recentTrips = getTransportHistory(selectedType)
+    .sort((a, b) => {
+      const [aDay, aMonth, aYear] = a.date.split("-").map(Number);
+      const [bDay, bMonth, bYear] = b.date.split("-").map(Number);
+      const aDate = new Date(aYear, aMonth - 1, aDay).getTime();
+      const bDate = new Date(bYear, bMonth - 1, bDay).getTime();
+      return bDate - aDate;
+    })
+    .slice(0, 10);
+
   return (
     <div className="p-4 space-y-6">
       <div>
-        <h2 className="mb-2">Log Your Trip</h2>
+        <h2 className="mb-2 text-2xl font-bold">Log Your Trip</h2>
         <p className="text-gray-600">
           Track your eco-friendly transportation and earn points!
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Transport Type Selection */}
         <div>
-          <label className="block mb-3 text-gray-700">
+          <label className="block mb-3 text-gray-700 font-medium">
             Select Transport Type
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -110,10 +274,10 @@ export function TransportTracking({
                 key={option.type}
                 type="button"
                 onClick={() => setSelectedType(option.type)}
-                className={`p-4 rounded-xl border-2 transition-all ${
+                className={`p-4 rounded-xl border-2 transition-all hover:shadow-lg ${
                   selectedType === option.type
-                    ? "border-green-500 bg-green-50 shadow-md"
-                    : `${option.color} hover:shadow-md`
+                    ? "border-green-500 bg-green-50 shadow-md ring-2 ring-green-200"
+                    : `${option.color} hover:shadow-md hover:scale-[1.02]`
                 }`}
               >
                 <span className="text-3xl mb-2 block">
@@ -122,65 +286,104 @@ export function TransportTracking({
                 <p
                   className={
                     selectedType === option.type
-                      ? "text-green-900"
+                      ? "text-green-900 font-semibold"
                       : "text-gray-700"
                   }
                 >
                   {option.label}
                 </p>
-                {selectedType === option.type && (
-                  <div className="mt-2 bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mx-auto">
-                    <Check className="w-4 h-4" />
-                  </div>
-                )}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Distance Input */}
-        <div>
-          <label
-            htmlFor="distance"
-            className="block mb-2 text-gray-700"
-          >
-            Distance (km)
-          </label>
-          <input
-            id="distance"
-            type="number"
-            step="0.1"
-            min="0.1"
-            value={distance}
-            onChange={(e) => setDistance(e.target.value)}
-            placeholder="Enter distance"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            required
-          />
+        <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-2xl p-6 border border-emerald-200">
+          <div className="flex items-center gap-3 mb-4">
+            <Calendar className="w-5 h-5 text-emerald-600" />
+            <h3 className="text-lg font-semibold text-gray-800">
+              Recent{" "}
+              {
+                transportOptions.find((t) => t.type === selectedType)
+                  ?.label
+              }{" "}
+              Trips (Last 10)
+            </h3>
+          </div>
+
+          {recentTrips.length > 0 ? (
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {recentTrips.map((trip, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-white/50 rounded-xl backdrop-blur-sm border hover:bg-white/70 transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <MapPin className="w-4 h-4 text-gray-500" />
+                    <span className="font-medium">
+                      {trip.traveled.toFixed(1)} km
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-500 bg-white/60 px-2 py-1 rounded-full">
+                    {trip.date}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" />
+              <p>
+                No{" "}
+                {transportOptions
+                  .find((t) => t.type === selectedType)
+                  ?.label?.toLowerCase()}{" "}
+                trips yet
+              </p>
+              <p className="text-sm">Log your first trip!</p>
+            </div>
+          )}
         </div>
 
-        {/* Preview */}
         {distance && parseFloat(distance) > 0 && (
-          <div className="bg-linear-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
-            <p className="text-gray-700 mb-3">Trip Summary</p>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200 shadow-lg">
+            <p className="text-lg font-semibold text-gray-800 mb-4">
+              Trip Preview
+            </p>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center p-3 bg-white/50 rounded-lg">
+                <span className="text-gray-600">Distance:</span>
+                <span className="font-bold text-2xl text-green-700">
+                  {distance} km
+                </span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-white/50 rounded-lg">
                 <span className="text-gray-600">Points to earn:</span>
-                <span className="text-green-600">
+                <span className="text-green-600 font-bold text-xl">
                   +{previewPoints} pts
                 </span>
               </div>
               {previewCO2 > 0 && (
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center p-3 bg-white/50 rounded-lg">
                   <span className="text-gray-600">CO₂ saved:</span>
-                  <span className="text-blue-600">
-                    {previewCO2} kg
+                  <span className="text-blue-600 font-bold">
+                    {previewCO2.toFixed(1)} kg
                   </span>
                 </div>
               )}
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Impact:</span>
-                <span className="text-purple-600">
+              <div className="flex justify-between items-center p-3 bg-white/50 rounded-lg">
+                <span className="text-gray-600 font-medium">
+                  Impact:
+                </span>
+                <span
+                  className={`font-bold px-3 py-1 rounded-full text-sm ${
+                    selectedType === "walking" ||
+                    selectedType === "biking"
+                      ? "bg-green-100 text-green-800"
+                      : selectedType === "public"
+                      ? "bg-blue-100 text-blue-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}
+                >
                   {selectedType === "walking" ||
                   selectedType === "biking"
                     ? "🌟 Excellent!"
@@ -192,15 +395,6 @@ export function TransportTracking({
             </div>
           </div>
         )}
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={!distance || parseFloat(distance) <= 0}
-          className="w-full bg-linear-to-r from-green-600 to-emerald-600 text-white py-4 rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
-        >
-          Log Trip & Earn Points
-        </button>
       </form>
     </div>
   );

@@ -131,7 +131,7 @@ export function RecyclingMap() {
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
       {/* Map Placeholder */}
-      <div className="relative bg-linear-to-br from-green-100 to-blue-100 h-64 shrink-0">
+      <div className="relative bg-gradient-to-br from-green-100 to-blue-100 h-64 shrink-0">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <MapPin className="w-16 h-16 text-green-600 mx-auto mb-2" />

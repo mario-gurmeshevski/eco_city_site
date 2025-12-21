@@ -99,7 +99,7 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
         ) : (
           <button
             onClick={() => setScanning(true)}
-            className="w-full bg-linear-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-8 flex flex-col items-center gap-4 hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl"
+            className="w-full bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-8 flex flex-col items-center gap-4 hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl"
           >
             <Camera className="w-16 h-16" />
             <div>
