@@ -297,7 +297,7 @@ export function TransportTracking({
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-2xl p-6 border border-emerald-200">
+        <div className="bg-linear-to-r from-emerald-50 to-blue-50 rounded-2xl p-6 border border-emerald-200">
           <div className="flex items-center gap-3 mb-4">
             <Calendar className="w-5 h-5 text-emerald-600" />
             <h3 className="text-lg font-semibold text-gray-800">
@@ -345,7 +345,7 @@ export function TransportTracking({
         </div>
 
         {distance && parseFloat(distance) > 0 && (
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200 shadow-lg">
+          <div className="bg-linear-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200 shadow-lg">
             <p className="text-lg font-semibold text-gray-800 mb-4">
               Trip Preview
             </p>

@@ -51,7 +51,7 @@ export function Home({
       </div>
 
       {/* Points Card */}
-      <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-6 shadow-lg">
+      <div className="bg-linear-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-6 shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-green-100 mb-1">Total EcoPoints</p>

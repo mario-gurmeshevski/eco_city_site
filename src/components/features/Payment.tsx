@@ -20,19 +20,18 @@ function Payment() {
   const [parkingHours, setParkingHours] = useState(1);
   const [showParkingQR, setShowParkingQR] = useState(false);
 
-
   // Payment QR state
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [showPaymentQR, setShowPaymentQR] = useState(false);
 
-    // Calculate cost based on parking hours (1 hour = 25 tokens)
-    const calculateCost = (hours: number) => {
-        return hours * 25;
-    };
+  // Calculate cost based on parking hours (1 hour = 25 tokens)
+  const calculateCost = (hours: number) => {
+    return hours * 25;
+  };
 
-    const totalCost = useMemo(() => {
-        return calculateCost(parkingHours);
-    }, [parkingHours]);
+  const totalCost = useMemo(() => {
+    return calculateCost(parkingHours);
+  }, [parkingHours]);
 
   // Handle parking form submission
   const handleParkingSubmit = (e: React.FormEvent) => {
@@ -134,7 +133,7 @@ function Payment() {
       </div>
 
       {/* Points Balance */}
-      <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-6 shadow-lg">
+      <div className="bg-linear-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-6 shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-green-100 mb-1">Available Tokens</p>
@@ -211,8 +210,8 @@ function Payment() {
                 min="1"
                 value={parkingHours}
                 onChange={(e) => {
-                    const hours = parseInt(e.target.value) || 1;
-                    setParkingHours(hours);
+                  const hours = parseInt(e.target.value) || 1;
+                  setParkingHours(hours);
                 }}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
@@ -248,7 +247,7 @@ function Payment() {
             disabled={points < totalCost}
             className={`w-full py-3 px-4 rounded-xl transition-all ${
               points >= totalCost
-                ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg"
+                ? "bg-linear-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
@@ -314,7 +313,7 @@ function Payment() {
             disabled={paymentAmount <= 0 || points < paymentAmount}
             className={`w-full py-3 px-4 rounded-xl transition-all ${
               paymentAmount > 0 && points >= paymentAmount
-                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg"
+                ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
@@ -341,13 +340,13 @@ function Payment() {
 
             <div className="flex flex-col items-center mb-6">
               <div className="bg-white p-4 rounded-xl border border-gray-200">
-                  <QRCodeSVG
-                      value={`PARKING:${licensePlate}:${location}:${parkingHours}HRS:${totalCost}TOKENS`}
-                      size={200}
-                      bgColor="#ffffff"
-                      fgColor="#000000"
-                      level="H"
-                  />
+                <QRCodeSVG
+                  value={`PARKING:${licensePlate}:${location}:${parkingHours}HRS:${totalCost}TOKENS`}
+                  size={200}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="H"
+                />
               </div>
 
               <div className="mt-4 text-center space-y-1">
@@ -386,7 +385,7 @@ function Payment() {
 
               <button
                 onClick={closeQRModal}
-                className="py-3 px-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg"
+                className="py-3 px-4 bg-linear-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg"
               >
                 Close
               </button>
@@ -412,13 +411,13 @@ function Payment() {
 
             <div className="flex flex-col items-center mb-6">
               <div className="bg-white p-4 rounded-xl border border-gray-200">
-                  <QRCodeSVG
-                      value={`PARKING:${licensePlate}:${location}:${parkingHours}HRS:${totalCost}TOKENS`}
-                      size={200}
-                      bgColor="#ffffff"
-                      fgColor="#000000"
-                      level="H"
-                  />
+                <QRCodeSVG
+                  value={`PARKING:${licensePlate}:${location}:${parkingHours}HRS:${totalCost}TOKENS`}
+                  size={200}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="H"
+                />
               </div>
 
               <div className="mt-4 text-center">
@@ -442,7 +441,7 @@ function Payment() {
 
               <button
                 onClick={closeQRModal}
-                className="py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg"
+                className="py-3 px-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg"
               >
                 Close
               </button>
@@ -454,4 +453,4 @@ function Payment() {
   );
 }
 
-export default Payment
+export default Payment;
