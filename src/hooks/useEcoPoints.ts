@@ -246,17 +246,19 @@ export function useEcoPoints() {
       return false;
     }
 
+    const newPoints = points - amount;
+
     // Create activity record for the transaction
     const activity: Activity = {
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       timestamp: Date.now(),
       type: activityType,
-      points: -amount, // Negative to indicate deduction
+      points: -amount,
       description: description,
     };
 
     setActivities((prev) => [activity, ...prev]);
-    setPoints((prev) => prev - amount);
+    setPoints(newPoints); // Use calculated value
 
     // Update currentUser in localStorage
     const currentUserJson = localStorage.getItem("currentUser");
@@ -265,7 +267,7 @@ export function useEcoPoints() {
         const currentUser: User = JSON.parse(currentUserJson);
         const updatedUser = {
           ...currentUser,
-          points: points - amount, // Use the new calculated points value
+          points: newPoints, // USE newPoints, not points - amount
         };
         localStorage.setItem(
           "currentUser",
@@ -294,7 +296,9 @@ export function useEcoPoints() {
         baseDistance = currentUser.distanced || 0;
         baseRecyclings = currentUser.recyclings || 0;
       } catch (e) {
-        console.warn("Failed to parse currentUser for impact calculation");
+        console.warn(
+          "Failed to parse currentUser for impact calculation"
+        );
       }
     }
 
@@ -317,8 +321,12 @@ export function useEcoPoints() {
 
     // Total is base values + recent activities
     return {
-      totalCO2Saved: parseFloat((baseCO2Saved + recentCO2Saved).toFixed(2)),
-      totalDistance: parseFloat((baseDistance + recentDistance).toFixed(2)),
+      totalCO2Saved: parseFloat(
+        (baseCO2Saved + recentCO2Saved).toFixed(2)
+      ),
+      totalDistance: parseFloat(
+        (baseDistance + recentDistance).toFixed(2)
+      ),
       recyclingsCount: baseRecyclings + recentRecyclings,
       tripsCount,
     };
