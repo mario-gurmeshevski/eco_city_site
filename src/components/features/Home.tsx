@@ -36,7 +36,7 @@ export function Home({
     if (activity.transportType === "walking") return "🚶";
     if (activity.transportType === "biking") return "🚴";
     if (activity.transportType === "public") return "🚌";
-    if (activity.transportType === "carpool") return "🚗";
+    if (activity.transportType === "car") return "🚗";
     return "✨";
   };
 

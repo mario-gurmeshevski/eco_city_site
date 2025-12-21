@@ -29,6 +29,7 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
 
         onAddActivity({
           type: "recycling",
+          recyclingType: "bottle", // Required by useEcoPoints
           points: points,
           description: `Recycling at collection point (+${points} pts)`,
         });
