@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { users } from "../../data/users";
 
 interface UserFormData {
   name: string;
@@ -36,7 +37,7 @@ const Register: React.FC = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
@@ -56,49 +57,40 @@ const Register: React.FC = () => {
       return;
     }
 
-    try {
-      // Load existing users
-      const response = await fetch("/user.json");
-      if (!response.ok) {
-        throw new Error("Failed to load users");
-      }
-      const existingUsers = await response.json();
-
-      // Check if email already exists
-      const emailExists = existingUsers.some(
-        (user: any) => user.email === formData.email
-      );
-      if (emailExists) {
-        toast.error("Email already registered");
-        return;
-      }
-
-      // Create new user
-      const newUser = {
-        id:
-          existingUsers.length > 0
-            ? Math.max(...existingUsers.map((u: any) => u.id)) + 1
-            : 1,
-        name: formData.name,
-        surname: formData.surname,
-        email: formData.email,
-        password: formData.password,
-        gender: formData.gender,
-        age: formData.age,
-        municipality: formData.municipality,
-        points: 0, // Initialize with 0 points
-      };
-
-      // Store the new user as the current user
-      localStorage.setItem("currentUser", JSON.stringify(newUser));
-
-      // Show success message and redirect
-      toast.success("Registration successful! You can now log in.");
-      navigate("/login");
-    } catch (err) {
-      toast.error("An error occurred during registration");
-      console.error(err);
+    // Check if email already exists in the imported users
+    const emailExists = users.some(
+      (user: any) => user.email === formData.email
+    );
+    if (emailExists) {
+      toast.error("Email already registered");
+      return;
     }
+
+    // Create new user
+    const newUser = {
+      id:
+        users.length > 0
+          ? Math.max(...users.map((u: any) => u.id)) + 1
+          : 1,
+      name: formData.name,
+      surname: formData.surname,
+      email: formData.email,
+      password: formData.password,
+      gender: formData.gender,
+      age: formData.age,
+      municipality: formData.municipality,
+      points: 0, // Initialize with 0 points
+      co2saved: 0,
+      distanced: 0,
+      recyclings: 0
+    };
+
+    // Store the new user as the current user
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
+
+    // Show success message and redirect
+    toast.success("Registration successful! You can now log in.");
+    navigate("/login");
   };
 
   return (
