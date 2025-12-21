@@ -46,7 +46,7 @@ export function Home({
       <div className="text-center py-4">
         <h2>Your EcoCity Dashboard</h2>
         <p className="text-gray-600 mt-2">
-          Making the planet greener, one action at a time
+          Making the city greener, one action at a time
         </p>
       </div>
 
