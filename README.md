@@ -108,4 +108,5 @@ Users can log in, record eco-friendly actions, earn EcoCity points, view recycli
     <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/b45c6dff-f037-4f67-a0e2-ca5835115cad" />
 
 - **Demo Video:**
+https://www.canva.com/design/DAG8LaF9Mrg/0bRssruBThs7RShs__tkAQ/edit?utm_content=DAG8LaF9Mrg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
   
