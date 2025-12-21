@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { users } from "../../data/users";
 
 interface User {
   id: number;
@@ -22,18 +23,9 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // Load users from user.json
-  const loadUsers = async (): Promise<User[]> => {
-    try {
-      const response = await fetch("/user.json");
-      if (!response.ok) {
-        throw new Error("Failed to load users");
-      }
-      return response.json();
-    } catch (err) {
-      console.error("Error loading users:", err);
-      return [];
-    }
+  // Load users from the imported data
+  const loadUsers = (): User[] => {
+    return users;
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -46,14 +38,12 @@ const Login: React.FC = () => {
 
     try {
       const users = await loadUsers();
-      console.log("Loaded users from user.json:", users);
       const user = users.find(
         (u) => u.email === email && u.password === password
       );
       console.log("Matched user:", user);
 
       if (user) {
-        console.log("Found user from user.json:", user);
         const userWithStats = {
           ...user,
           points: user.points ?? 0,

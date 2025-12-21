@@ -265,7 +265,7 @@ export function useEcoPoints() {
         const currentUser: User = JSON.parse(currentUserJson);
         const updatedUser = {
           ...currentUser,
-          points: points - amount,
+          points: points - amount, // Use the new calculated points value
         };
         localStorage.setItem(
           "currentUser",
@@ -281,26 +281,45 @@ export function useEcoPoints() {
   };
 
   const calculateImpact = (): Impact => {
-    let totalCO2Saved = 0;
-    let totalDistance = 0;
-    let recyclingsCount = 0;
+    // Get existing user stats from localStorage to use as base values
+    const currentUserJson = localStorage.getItem("currentUser");
+    let baseCO2Saved = 0;
+    let baseDistance = 0;
+    let baseRecyclings = 0;
+
+    if (currentUserJson) {
+      try {
+        const currentUser: User = JSON.parse(currentUserJson);
+        baseCO2Saved = currentUser.co2saved || 0;
+        baseDistance = currentUser.distanced || 0;
+        baseRecyclings = currentUser.recyclings || 0;
+      } catch (e) {
+        console.warn("Failed to parse currentUser for impact calculation");
+      }
+    }
+
+    // Calculate impact from recent activities only (to avoid double counting)
+    let recentCO2Saved = 0;
+    let recentDistance = 0;
+    let recentRecyclings = 0;
     let tripsCount = 0;
 
     activities.forEach((activity) => {
       if (activity.type === "recycling") {
-        recyclingsCount++;
-        if (activity.co2Saved) totalCO2Saved += activity.co2Saved;
+        recentRecyclings++;
+        if (activity.co2Saved) recentCO2Saved += activity.co2Saved;
       } else if (activity.type === "transport") {
         tripsCount++;
-        if (activity.distance) totalDistance += activity.distance;
-        if (activity.co2Saved) totalCO2Saved += activity.co2Saved;
+        if (activity.distance) recentDistance += activity.distance;
+        if (activity.co2Saved) recentCO2Saved += activity.co2Saved;
       }
     });
 
+    // Total is base values + recent activities
     return {
-      totalCO2Saved: parseFloat(totalCO2Saved.toFixed(2)),
-      totalDistance: parseFloat(totalDistance.toFixed(2)),
-      recyclingsCount,
+      totalCO2Saved: parseFloat((baseCO2Saved + recentCO2Saved).toFixed(2)),
+      totalDistance: parseFloat((baseDistance + recentDistance).toFixed(2)),
+      recyclingsCount: baseRecyclings + recentRecyclings,
       tripsCount,
     };
   };
