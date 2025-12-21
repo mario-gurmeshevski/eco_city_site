@@ -31,6 +31,14 @@ export const users = [
         traveled: 8,
         date: "22-10-2025",
       },
+      {
+        traveled: 10,
+        date: "31-10-2025",
+      },
+      {
+        traveled: 1,
+        date: "27-10-2025",
+      },
     ],
     public_transport: [
       {
@@ -41,15 +49,15 @@ export const users = [
         traveled: 7,
         date: "24-10-2025",
       },
+      {
+        traveled: 25,
+        date: "24-11-2025",
+      },
     ],
     car: [
       {
         traveled: 50,
         date: "24-10-2025",
-      },
-      {
-        traveled: 10,
-        date: "26-10-2025",
       },
     ],
   },
