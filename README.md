@@ -86,8 +86,6 @@ Users can log in, record eco-friendly actions, earn EcoCity points, view recycli
 ## Technologies Used
 
 - **Frontend:** React + Vita
-- **Backend:** Node.js, Express
-- **Database:** MongoDB / PostgreSQL
 - **Maps:** OpenStreetMap, Leaflet.js
 - **Design:** Figma
 - **QR Codes:** QR code generation & scanning libraries
@@ -99,7 +97,9 @@ Users can log in, record eco-friendly actions, earn EcoCity points, view recycli
 - **Screenshots:**
 
   - Dashboard
+    <img width="565" height="921" alt="image" src="https://github.com/user-attachments/assets/d8d8dfbb-b339-46eb-bdb6-e1f9a1e70113" />
   - Transport Logging
+    
   - Recycling (QR Scan)
   - Recycling Map
 
