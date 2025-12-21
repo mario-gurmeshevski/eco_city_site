@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
-import { MapPin, Navigation, Phone, Clock } from "lucide-react";
+import { Navigation, Phone, Clock } from "lucide-react";
+//MapPin,
 import toast from "react-hot-toast";
+import "leaflet/dist/leaflet.css";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useMap } from "react-leaflet";
+import L from "leaflet";
+import "./leafletIconFix.ts"
 
 interface RecyclingPoint {
   id: string;
@@ -19,7 +25,7 @@ const mockRecyclingPoints: RecyclingPoint[] = [
   {
     id: '1',
     name: 'Vero Center Pakomak',
-    address: 'Bul.Koco Racin 1, Skopje',
+    address: 'Bul. Koco Racin 1, Skopje',
     lat: 41.99735,
     lng: 21.42800,
     type: 'plasticRecycling',
@@ -51,7 +57,7 @@ const mockRecyclingPoints: RecyclingPoint[] = [
   {
     id: '4',
     name: 'Diamond Mall Battery Recycling',
-    address: 'Ul.Jordan Mijalkov 31, Skopje',
+    address: 'Ul. Jordan Mijalkov 31, Skopje',
     lat: 41.9904,
     lng: 21.4283,
     type: 'batteryRecycling',
@@ -62,7 +68,7 @@ const mockRecyclingPoints: RecyclingPoint[] = [
   {
     id: '5',
     name: 'East Gate Mall Plastic Recycling',
-    address: 'Ul.Belasitsa 2, Skopje',
+    address: 'Ul. Belasitsa 2, Skopje',
     lat: 42.0000,
     lng: 21.4333,
     type: 'plasticRecycling',
@@ -70,6 +76,24 @@ const mockRecyclingPoints: RecyclingPoint[] = [
     distance: 2.4,
   },
 ];
+
+function FlyToUser({
+                     location,
+                   }: {
+  location: { lat: number; lng: number } | null;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (location) {
+      map.flyTo([location.lat, location.lng], 14, {
+        duration: 1.2,
+      });
+    }
+  }, [location, map]);
+
+  return null;
+}
 
 export function RecyclingMap() {
   const [points] = useState<RecyclingPoint[]>(mockRecyclingPoints);
@@ -111,54 +135,122 @@ export function RecyclingMap() {
     }
   };
 
-  const getTypeColor = (type: string) => {
+  // const getTypeColor = (type: string) => {
+  //   switch (type) {
+  //     case "center":
+  //       return "bg-blue-100 border-blue-300 text-blue-900";
+  //     case "station":
+  //       return "bg-green-100 border-green-300 text-green-900";
+  //     case "bin":
+  //       return "bg-gray-100 border-gray-300 text-gray-900";
+  //     default:
+  //       return "bg-purple-100 border-purple-300 text-purple-900";
+  //   }
+  // };
+
+  const getTypeColor = (type: RecyclingPoint["type"]) => {
     switch (type) {
-      case "center":
-        return "bg-blue-100 border-blue-300 text-blue-900";
-      case "station":
+      case "plasticRecycling":
         return "bg-green-100 border-green-300 text-green-900";
-      case "bin":
+      case "batteryRecycling":
+        return "bg-yellow-100 border-yellow-300 text-yellow-900";
+      case "tyreRecycling":
         return "bg-gray-100 border-gray-300 text-gray-900";
       default:
         return "bg-purple-100 border-purple-300 text-purple-900";
     }
   };
 
+  // const openDirections = (point: RecyclingPoint) => {
+  //   const url = `https://www.google.com/maps/dir/?api=1&destination=${point.lat},${point.lng}`;
+  //   window.open(url, "_blank");
+  // };
+
   const openDirections = (point: RecyclingPoint) => {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${point.lat},${point.lng}`;
+    const url = `https://www.openstreetmap.org/directions?to=${point.lat},${point.lng}`;
     window.open(url, "_blank");
   };
+
+  const redUserIcon = new L.Icon({
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
 
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
       {/* Map Placeholder */}
-      <div className="relative bg-linear-to-br from-green-100 to-blue-100 h-64 shrink-0">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <MapPin className="w-16 h-16 text-green-600 mx-auto mb-2" />
-            <p className="text-gray-700">Interactive Map View</p>
-            <p className="text-gray-500 text-sm mt-1">
-              Showing {points.length} recycling points
-            </p>
-          </div>
-        </div>
+      {/*<div className="relative bg-linear-to-br from-green-100 to-blue-100 h-64 shrink-0">*/}
+      {/*  <div className="absolute inset-0 flex items-center justify-center">*/}
+      {/*    <div className="text-center">*/}
+      {/*      <MapPin className="w-16 h-16 text-green-600 mx-auto mb-2" />*/}
+      {/*      <p className="text-gray-700">Interactive Map View</p>*/}
+      {/*      <p className="text-gray-500 text-sm mt-1">*/}
+      {/*        Showing {points.length} recycling points*/}
+      {/*      </p>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
 
-        {/* User Location Indicator */}
-        {userLocation && (
-          <div className="absolute top-4 right-4 bg-white rounded-full px-3 py-2 shadow-lg flex items-center gap-2">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-            <span className="text-sm text-gray-700">
-              Your location
-            </span>
-          </div>
-        )}
+      {/*  /!* User Location Indicator *!/*/}
+      {/*  {userLocation && (*/}
+      {/*    <div className="absolute top-4 right-4 bg-white rounded-full px-3 py-2 shadow-lg flex items-center gap-2">*/}
+      {/*      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>*/}
+      {/*      <span className="text-sm text-gray-700">*/}
+      {/*        Your location*/}
+      {/*      </span>*/}
+      {/*    </div>*/}
+      {/*  )}*/}
 
-        {/* Map Controls */}
-        <div className="absolute bottom-4 right-4 space-y-2">
-          <button className="bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-shadow">
-            <Navigation className="w-5 h-5 text-gray-700" />
-          </button>
-        </div>
+      {/*  /!* Map Controls *!/*/}
+      {/*  <div className="absolute bottom-4 right-4 space-y-2">*/}
+      {/*    <button className="bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-shadow">*/}
+      {/*      <Navigation className="w-5 h-5 text-gray-700" />*/}
+      {/*    </button>*/}
+      {/*  </div>*/}
+      {/*</div>*/}
+
+      <div className="h-64 shrink-0">
+        <MapContainer
+            center={[41.9981, 21.4254]} // Skopje default
+            zoom={13}
+            className="h-full w-full rounded-none"
+        >
+          {/* OpenStreetMap tiles – NO BILLING */}
+          <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution="© OpenStreetMap contributors"
+          />
+
+          <FlyToUser location={userLocation} />
+
+          {/* Recycling points */}
+          {points.map((point) => (
+              <Marker
+                  key={point.id}
+                  position={[point.lat, point.lng]}
+                  eventHandlers={{
+                    click: () => setSelectedPoint(point),
+                  }}
+              >
+                <Popup>
+                  <strong>{point.name}</strong>
+                  <br />
+                  {point.address}
+                </Popup>
+              </Marker>
+          ))}
+
+          {/* User location */}
+          {userLocation && (
+              <Marker position={[userLocation.lat, userLocation.lng]}
+              icon={redUserIcon}>
+                <Popup>You are here</Popup>
+              </Marker>
+          )}
+        </MapContainer>
       </div>
 
       {/* Points List */}
