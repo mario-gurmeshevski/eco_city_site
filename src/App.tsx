@@ -31,9 +31,9 @@ const MainAppContent = () => {
   const { points, activities, addActivity, impact } = useEcoPoints();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-blue-50 pb-20">
+    <div className="min-h-screen bg-linear-to-b from-green-50 to-blue-50 pb-20">
       <div className="max-w-md mx-auto bg-white min-h-screen shadow-lg">
-        <header className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 sticky top-0 z-10 shadow-md">
+        <header className="bg-linear-to-r from-green-600 to-emerald-600 text-white p-4 sticky top-0 z-10 shadow-md">
           <div className="flex items-center justify-between">
             <img
               src={LOGO1}
