@@ -50,7 +50,6 @@ const Login: React.FC = () => {
       const user = users.find(
         (u) => u.email === email && u.password === password
       );
-      console.log("Matched user:", user);
 
       if (user) {
         // ✅ FIXED: Explicitly preserve ALL transport arrays
@@ -73,13 +72,6 @@ const Login: React.FC = () => {
           public_transport: user.public_transport || [],
           car: user.car || [],
         };
-
-        console.log(
-          "🔍 FULL userWithStats with transport data:",
-          userWithStats
-        );
-        console.log("✅ Walking trips:", userWithStats.walking);
-        console.log("✅ Biking trips:", userWithStats.biking);
 
         localStorage.setItem(
           "currentUser",
@@ -107,7 +99,6 @@ const Login: React.FC = () => {
       }
     } catch (err) {
       toast.error("An error occurred during login");
-      console.error(err);
     }
   };
 

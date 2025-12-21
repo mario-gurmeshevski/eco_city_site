@@ -108,6 +108,7 @@ export function useEcoPoints() {
     return [];
   });
 
+  // ✅ FIRST USEEFFECT - Listen to BOTH events
   useEffect(() => {
     const handleStorageChange = () => {
       const currentUserJson = localStorage.getItem("currentUser");
@@ -134,12 +135,15 @@ export function useEcoPoints() {
     };
 
     window.addEventListener("userLoggedIn", handleStorageChange);
+    window.addEventListener("userUpdated", handleStorageChange);
 
     return () => {
       window.removeEventListener("userLoggedIn", handleStorageChange);
+      window.removeEventListener("userUpdated", handleStorageChange);
     };
   }, []);
 
+  // ✅ SECOND USEEFFECT - Save to localStorage (NO event dispatch)
   useEffect(() => {
     localStorage.setItem("ecoCity_points", points.toString());
     localStorage.setItem(
@@ -159,7 +163,6 @@ export function useEcoPoints() {
           "currentUser",
           JSON.stringify(updatedUser)
         );
-        window.dispatchEvent(new Event("userUpdated"));
       } catch (e) {
         console.warn("Failed to update user points", e);
       }
@@ -167,35 +170,24 @@ export function useEcoPoints() {
   }, [points, activities]);
 
   const addActivity = (input: Omit<Activity, "id" | "timestamp">) => {
-    console.log("🧑‍🔧 addActivity received:", input); // ✅ Debug log
-
     let activity: Activity;
 
     if (input.type === "recycling") {
-      // Prioritize QR station points over fixed recycling points
-      if (
-        input.recyclingType === "qr_station" ||
-        input.points !== undefined
-      ) {
-        // Use QR code points directly
+      if (input.points !== undefined && input.points > 0) {
         activity = {
           ...input,
           id: `${Date.now()}-${Math.random()
             .toString(36)
             .slice(2, 9)}`,
           timestamp: Date.now(),
-          points: input.points || 0,
-          recyclingType:
-            input.recyclingType === "qr_station"
-              ? "qr_station"
-              : (input.recyclingType as RecyclingType),
+          points: input.points,
+          recyclingType: input.recyclingType || "bottle",
           co2Saved: 0.5,
         };
       } else if (
         input.recyclingType &&
         input.recyclingType in RECYCLING_POINTS
       ) {
-        // Standard recycling (bottle, tyre, batterie)
         const recyclingPoints =
           RECYCLING_POINTS[input.recyclingType as RecyclingType];
         activity = {
@@ -222,7 +214,6 @@ export function useEcoPoints() {
         input.distance,
         input.extraPeople
       );
-
       activity = {
         ...input,
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
@@ -231,62 +222,29 @@ export function useEcoPoints() {
         co2Saved: calc.co2Saved,
       };
     } else {
-      console.error("❌ Invalid activity format:", input);
+      console.error("Invalid activity format:", input);
       return;
     }
 
-    console.log("✅ Creating activity:", activity);
-
+    // Update state - this will trigger the useEffect to save to localStorage
     setActivities((prev) => [activity, ...prev]);
     setPoints((prev) => prev + activity.points);
-
-    const currentUserJson = localStorage.getItem("currentUser");
-    if (currentUserJson) {
-      try {
-        const currentUser: User = JSON.parse(currentUserJson);
-        const updatedUser = { ...currentUser };
-
-        if (input.type === "recycling") {
-          updatedUser.recyclings = (updatedUser.recyclings || 0) + 1;
-        } else if (
-          input.type === "transport" &&
-          input.distance !== undefined
-        ) {
-          updatedUser.distanced =
-            (updatedUser.distanced || 0) + input.distance;
-        }
-
-        if (activity.co2Saved) {
-          updatedUser.co2saved =
-            (updatedUser.co2saved || 0) + activity.co2Saved;
-        }
-
-        localStorage.setItem(
-          "currentUser",
-          JSON.stringify(updatedUser)
-        );
-        window.dispatchEvent(new Event("userUpdated"));
-      } catch (e) {
-        console.warn("Failed to update user counters", e);
-      }
-    }
   };
 
-  // deductPoints and other functions remain unchanged...
   const deductPoints = (
     amount: number,
     description: string,
     activityType: "parking" | "payment" = "payment"
   ): boolean => {
     if (amount <= 0) {
-      console.warn("Deduction amount must be positive");
       return false;
     }
 
     if (points < amount) {
-      console.warn("Insufficient points");
       return false;
     }
+
+    const newPoints = points - amount;
 
     const activity: Activity = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
@@ -296,8 +254,13 @@ export function useEcoPoints() {
       description: description,
     };
 
-    setActivities((prev) => [activity, ...prev]);
-    setPoints((prev) => prev - amount);
+    const updatedActivities = [activity, ...activities];
+
+    localStorage.setItem("ecoCity_points", newPoints.toString());
+    localStorage.setItem(
+      "ecoCity_activities",
+      JSON.stringify(updatedActivities)
+    );
 
     const currentUserJson = localStorage.getItem("currentUser");
     if (currentUserJson) {
@@ -305,13 +268,12 @@ export function useEcoPoints() {
         const currentUser: User = JSON.parse(currentUserJson);
         const updatedUser = {
           ...currentUser,
-          points: points - amount,
+          points: newPoints,
         };
         localStorage.setItem(
           "currentUser",
           JSON.stringify(updatedUser)
         );
-        window.dispatchEvent(new Event("userUpdated"));
       } catch (e) {
         console.warn(
           "Failed to update user points after deduction",
@@ -319,6 +281,11 @@ export function useEcoPoints() {
         );
       }
     }
+
+    window.dispatchEvent(new Event("userUpdated"));
+
+    setActivities(updatedActivities);
+    setPoints(newPoints);
 
     return true;
   };
