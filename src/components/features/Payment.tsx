@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   QrCode,
   Car,
@@ -11,24 +11,28 @@ import toast from "react-hot-toast";
 import { QRCodeSVG } from "qrcode.react";
 import { useEcoPoints } from "../../hooks/useEcoPoints";
 
-export function Payment() {
+function Payment() {
   const { points, deductPoints } = useEcoPoints();
 
   // Parking payment state
   const [location, setLocation] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
   const [parkingHours, setParkingHours] = useState(1);
-  const [totalCost, setTotalCost] = useState(25); // 1 hour = 25 tokens
   const [showParkingQR, setShowParkingQR] = useState(false);
+
 
   // Payment QR state
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [showPaymentQR, setShowPaymentQR] = useState(false);
 
-  // Calculate cost based on parking hours (1 hour = 25 tokens)
-  const calculateCost = (hours: number) => {
-    return hours * 25;
-  };
+    // Calculate cost based on parking hours (1 hour = 25 tokens)
+    const calculateCost = (hours: number) => {
+        return hours * 25;
+    };
+
+    const totalCost = useMemo(() => {
+        return calculateCost(parkingHours);
+    }, [parkingHours]);
 
   // Handle parking form submission
   const handleParkingSubmit = (e: React.FormEvent) => {
@@ -120,11 +124,6 @@ export function Payment() {
     setShowPaymentQR(false);
   };
 
-  // Update total cost when parking hours change
-  useEffect(() => {
-    setTotalCost(calculateCost(parkingHours));
-  }, [parkingHours]);
-
   return (
     <div className="p-4 space-y-6 pb-8">
       <div>
@@ -160,7 +159,7 @@ export function Payment() {
               htmlFor="location"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Location
+              Parking Zone
             </label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -169,7 +168,7 @@ export function Payment() {
                 id="location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="Enter parking location"
+                placeholder="Enter parking zone"
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
@@ -212,9 +211,8 @@ export function Payment() {
                 min="1"
                 value={parkingHours}
                 onChange={(e) => {
-                  const hours = parseInt(e.target.value) || 1;
-                  setParkingHours(hours);
-                  setTotalCost(calculateCost(hours));
+                    const hours = parseInt(e.target.value) || 1;
+                    setParkingHours(hours);
                 }}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
@@ -343,14 +341,13 @@ export function Payment() {
 
             <div className="flex flex-col items-center mb-6">
               <div className="bg-white p-4 rounded-xl border border-gray-200">
-                <QRCodeSVG
-                  value={`PARKING:${licensePlate}:${location}:${parkingHours}HRS:${totalCost}TOKENS`}
-                  size={200}
-                  bgColor="#ffffff"
-                  fgColor="#000000"
-                  level="H"
-                  includeMargin={true}
-                />
+                  <QRCodeSVG
+                      value={`PARKING:${licensePlate}:${location}:${parkingHours}HRS:${totalCost}TOKENS`}
+                      size={200}
+                      bgColor="#ffffff"
+                      fgColor="#000000"
+                      level="H"
+                  />
               </div>
 
               <div className="mt-4 text-center space-y-1">
@@ -415,14 +412,13 @@ export function Payment() {
 
             <div className="flex flex-col items-center mb-6">
               <div className="bg-white p-4 rounded-xl border border-gray-200">
-                <QRCodeSVG
-                  value={`PAYMENT:${paymentAmount}TOKENS`}
-                  size={200}
-                  bgColor="#ffffff"
-                  fgColor="#000000"
-                  level="H"
-                  includeMargin={true}
-                />
+                  <QRCodeSVG
+                      value={`PARKING:${licensePlate}:${location}:${parkingHours}HRS:${totalCost}TOKENS`}
+                      size={200}
+                      bgColor="#ffffff"
+                      fgColor="#000000"
+                      level="H"
+                  />
               </div>
 
               <div className="mt-4 text-center">
@@ -457,3 +453,5 @@ export function Payment() {
     </div>
   );
 }
+
+export default Payment
