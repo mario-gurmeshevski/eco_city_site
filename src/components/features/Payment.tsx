@@ -134,7 +134,7 @@ function Payment() {
       </div>
 
       {/* Points Balance */}
-      <div className="bg-linear-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-6 shadow-lg">
+      <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-6 shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-green-100 mb-1">Available Tokens</p>
@@ -248,7 +248,7 @@ function Payment() {
             disabled={points < totalCost}
             className={`w-full py-3 px-4 rounded-xl transition-all ${
               points >= totalCost
-                ? "bg-linear-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg"
+                ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
@@ -314,7 +314,7 @@ function Payment() {
             disabled={paymentAmount <= 0 || points < paymentAmount}
             className={`w-full py-3 px-4 rounded-xl transition-all ${
               paymentAmount > 0 && points >= paymentAmount
-                ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg"
+                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
@@ -386,7 +386,7 @@ function Payment() {
 
               <button
                 onClick={closeQRModal}
-                className="py-3 px-4 bg-linear-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg"
+                className="py-3 px-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg"
               >
                 Close
               </button>
@@ -442,7 +442,7 @@ function Payment() {
 
               <button
                 onClick={closeQRModal}
-                className="py-3 px-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg"
+                className="py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg"
               >
                 Close
               </button>

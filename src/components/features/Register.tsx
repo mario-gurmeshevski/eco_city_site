@@ -82,7 +82,11 @@ const Register: React.FC = () => {
       points: 0, // Initialize with 0 points
       co2saved: 0,
       distanced: 0,
-      recyclings: 0
+      recyclings: 0,
+      walking: 0,
+      biking: 0,
+      public_transport: 0,
+      car: 0,
     };
 
     // Store the new user as the current user
@@ -94,7 +98,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">

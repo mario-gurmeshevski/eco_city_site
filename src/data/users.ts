@@ -10,8 +10,48 @@ export const users = [
     municipality: "New York",
     points: 135,
     co2saved: 23.5,
-    distanced: 150,
+    distanced: 0,
     recyclings: 10,
+    walking: [
+      {
+        traveled: 10,
+        date: "24-10-2025",
+      },
+      {
+        traveled: 5,
+        date: "27-10-2025",
+      },
+    ],
+    biking: [
+      {
+        traveled: 4,
+        date: "20-10-2025",
+      },
+      {
+        traveled: 8,
+        date: "22-10-2025",
+      },
+    ],
+    public_transport: [
+      {
+        traveled: 20,
+        date: "22-10-2025",
+      },
+      {
+        traveled: 7,
+        date: "24-10-2025",
+      },
+    ],
+    car: [
+      {
+        traveled: 50,
+        date: "24-10-2025",
+      },
+      {
+        traveled: 10,
+        date: "26-10-2025",
+      },
+    ],
   },
   {
     id: 2,
@@ -26,6 +66,30 @@ export const users = [
     co2saved: 23.5,
     distanced: 150,
     recyclings: 10,
+    walking: [
+      {
+        traveled: 10,
+        date: "18-10-2025",
+      },
+    ],
+    biking: [
+      {
+        traveled: 15,
+        date: "20-10-2025",
+      },
+    ],
+    public_transport: [
+      {
+        traveled: 8,
+        date: "22-10-2025",
+      },
+    ],
+    car: [
+      {
+        traveled: 2,
+        date: "24-10-2025",
+      },
+    ],
   },
   {
     id: 3,
@@ -40,6 +104,30 @@ export const users = [
     co2saved: 23.5,
     distanced: 150,
     recyclings: 10,
+    walking: [
+      {
+        traveled: 10,
+        date: "18-10-2025",
+      },
+    ],
+    biking: [
+      {
+        traveled: 15,
+        date: "20-10-2025",
+      },
+    ],
+    public_transport: [
+      {
+        traveled: 8,
+        date: "22-10-2025",
+      },
+    ],
+    car: [
+      {
+        traveled: 2,
+        date: "24-10-2025",
+      },
+    ],
   },
   {
     id: 4,
@@ -54,6 +142,30 @@ export const users = [
     co2saved: 23.5,
     distanced: 150,
     recyclings: 10,
+    walking: [
+      {
+        traveled: 10,
+        date: "18-10-2025",
+      },
+    ],
+    biking: [
+      {
+        traveled: 15,
+        date: "20-10-2025",
+      },
+    ],
+    public_transport: [
+      {
+        traveled: 8,
+        date: "22-10-2025",
+      },
+    ],
+    car: [
+      {
+        traveled: 2,
+        date: "24-10-2025",
+      },
+    ],
   },
   {
     id: 5,
@@ -68,5 +180,29 @@ export const users = [
     co2saved: 23.5,
     distanced: 150,
     recyclings: 10,
+    walking: [
+      {
+        traveled: 10,
+        date: "18-10-2025",
+      },
+    ],
+    biking: [
+      {
+        traveled: 15,
+        date: "20-10-2025",
+      },
+    ],
+    public_transport: [
+      {
+        traveled: 8,
+        date: "22-10-2025",
+      },
+    ],
+    car: [
+      {
+        traveled: 2,
+        date: "24-10-2025",
+      },
+    ],
   },
 ];

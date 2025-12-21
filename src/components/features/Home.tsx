@@ -46,12 +46,12 @@ export function Home({
       <div className="text-center py-4">
         <h2>Your EcoCity Dashboard</h2>
         <p className="text-gray-600 mt-2">
-          Making the planet greener, one action at a time
+          Making the city greener, one action at a time
         </p>
       </div>
 
       {/* Points Card */}
-      <div className="bg-linear-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-6 shadow-lg">
+      <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-6 shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-green-100 mb-1">Total EcoPoints</p>
