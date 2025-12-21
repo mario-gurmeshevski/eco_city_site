@@ -1,9 +1,6 @@
 import { useState } from "react";
-import {
-  type Activity,
-  getRecyclingPoints,
-} from "../../hooks/useEcoPoints";
-import { Camera, Check, AlertCircle } from "lucide-react";
+import { type Activity } from "../../hooks/useEcoPoints";
+import { Camera } from "lucide-react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import toast from "react-hot-toast";
 
@@ -20,17 +17,19 @@ export function QRScanner({ onAddActivity }: QRScannerProps) {
   const handleScan = (result: string) => {
     if (!result || result.trim() === "") return;
 
+    const cleanResult = result.trim();
+
     // Check if it starts with the prefix
-    if (result.startsWith("ECOCITY_RECYCLE_")) {
-      // Extract the number from the string
-      const pointsMatch = result.match(/\d+$/); // Gets digits at the end
+    if (cleanResult.startsWith("ECOCITY_RECYCLE_")) {
+      // Extract the number from the string after ECOCITY_RECYCLE_
+      const pointsMatch = cleanResult.match(/ECOCITY_RECYCLE_(\d+)$/);
 
       if (pointsMatch) {
-        const points = parseInt(pointsMatch[0]);
+        const points = parseInt(pointsMatch[1]);
 
         onAddActivity({
           type: "recycling",
-          points: points, // Use extracted points
+          points: points,
           description: `Recycling at collection point (+${points} pts)`,
         });
 

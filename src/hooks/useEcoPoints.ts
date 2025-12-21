@@ -169,7 +169,7 @@ export function useEcoPoints() {
           .toString(36)
           .substr(2, 9)}`,
         timestamp: Date.now(),
-        points: POINTS_MAP.recycling,
+        points: input.points, // Use points from input (e.g., from QR code), not default value
         co2Saved: 0.5,
       };
     } else if (
