@@ -76,6 +76,13 @@ export function TransportTracking({
     return keyMap[type];
   };
 
+  const getTotalDistanceByType = (type: TransportType): number => {
+    const history = getTransportHistory(type);
+    return parseFloat(
+      history.reduce((sum, trip) => sum + trip.traveled, 0).toFixed(2)
+    );
+  };
+
   useEffect(() => {
     const loadTransportData = () => {
       try {
@@ -92,7 +99,6 @@ export function TransportTracking({
           car: [],
         };
 
-        // 1. Load from currentUser (your JSON data)
         if (currentUserData) {
           const currentUser = JSON.parse(currentUserData);
           console.log("📊 Parsed currentUser:", currentUser);
@@ -106,7 +112,6 @@ export function TransportTracking({
           console.log("✅ Extracted transport data:", finalData);
         }
 
-        // 2. Merge with existing userTransportData
         if (newUserData) {
           const newParsed = JSON.parse(newUserData);
           finalData = {
@@ -126,7 +131,6 @@ export function TransportTracking({
           };
         }
 
-        // Each type maintains its own date uniqueness
         const transportKeys: (keyof UserData)[] = [
           "walking",
           "biking",
@@ -263,37 +267,56 @@ export function TransportTracking({
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-6">
         <div>
           <label className="block mb-3 text-gray-700 font-medium">
             Select Transport Type
           </label>
           <div className="grid grid-cols-2 gap-3">
-            {transportOptions.map((option) => (
-              <button
-                key={option.type}
-                type="button"
-                onClick={() => setSelectedType(option.type)}
-                className={`p-4 rounded-xl border-2 transition-all hover:shadow-lg ${
-                  selectedType === option.type
-                    ? "border-green-500 bg-green-50 shadow-md ring-2 ring-green-200"
-                    : `${option.color} hover:shadow-md hover:scale-[1.02]`
-                }`}
-              >
-                <span className="text-3xl mb-2 block">
-                  {option.icon}
-                </span>
-                <p
-                  className={
+            {transportOptions.map((option) => {
+              const totalDistance = getTotalDistanceByType(
+                option.type
+              );
+              const tripCount = getTransportHistory(
+                option.type
+              ).length;
+
+              return (
+                <button
+                  key={option.type}
+                  type="button"
+                  onClick={() => setSelectedType(option.type)}
+                  className={`p-4 rounded-xl border-2 transition-all hover:shadow-lg ${
                     selectedType === option.type
-                      ? "text-green-900 font-semibold"
-                      : "text-gray-700"
-                  }
+                      ? "border-green-500 bg-green-50 shadow-md ring-2 ring-green-200"
+                      : `${option.color} hover:shadow-md hover:scale-[1.02]`
+                  }`}
                 >
-                  {option.label}
-                </p>
-              </button>
-            ))}
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-3xl">{option.icon}</span>
+                    <p
+                      className={`text-left ${
+                        selectedType === option.type
+                          ? "text-green-900 font-semibold"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      {option.label}
+                    </p>
+                  </div>
+
+                  <div className="text-left border-t pt-3 mt-3">
+                    <div className="text-lg font-bold text-gray-900 mb-1">
+                      {totalDistance.toFixed(1)} km
+                    </div>
+                    <p className="text-xs text-gray-600">
+                      {tripCount} {tripCount === 1 ? "trip" : "trips"}{" "}
+                      total
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -395,7 +418,7 @@ export function TransportTracking({
             </div>
           </div>
         )}
-      </form>
+      </div>
     </div>
   );
 }
