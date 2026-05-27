@@ -85,28 +85,26 @@ Users can log in, record eco-friendly actions, earn EcoCity points, view recycli
 
 ## Technologies Used
 
-- **Frontend:** React + Vita
+- **Frontend:** React + Vite
 - **Maps:** OpenStreetMap, Leaflet.js
 - **Design:** Figma
 - **QR Codes:** QR code generation & scanning libraries
 
 ---
 
-## Demo
+## Demo & Interface
 
-- **Screenshots:**
+### Application Screenshots
 
-  - Dashboard
-    <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/d8d8dfbb-b339-46eb-bdb6-e1f9a1e70113" />
-  - Transport Viewing
-    <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/6527e78e-a6ef-4585-8f79-2bb984fdd5b9" />
-  - Recycling (QR Scan)
-    <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/3fbefbf8-21ea-4b45-b0cb-10b3bf6391fa" />
-  - Recycling Map
-    <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/27d2e004-b02d-4cdc-a799-649db05d65d9" />
-  - Payment
-    <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/b45c6dff-f037-4f67-a0e2-ca5835115cad" />
+| Dashboard | Transport Tracking | Recycling (QR Scan) |
+| :---: | :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/d8d8dfbb-b339-46eb-bdb6-e1f9a1e70113" height="420" alt="Dashboard Screen" style="border-radius: 8px;" /> | <img src="https://github.com/user-attachments/assets/6527e78e-a6ef-4585-8f79-2bb984fdd5b9" height="420" alt="Transport Screen" style="border-radius: 8px;" /> | <img src="https://github.com/user-attachments/assets/3fbefbf8-21ea-4b45-b0cb-10b3bf6391fa" height="420" alt="QR Scan Screen" style="border-radius: 8px;" /> |
 
-- **Demo Video:**
-https://www.canva.com/design/DAG8LaF9Mrg/0bRssruBThs7RShs__tkAQ/edit?utm_content=DAG8LaF9Mrg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
-  
+| Recycling Map | Rewards Payment |
+| :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/27d2e004-b02d-4cdc-a799-649db05d65d9" height="420" alt="Map Screen" style="border-radius: 8px;" /> | <img src="https://github.com/user-attachments/assets/b45c6dff-f037-4f67-a0e2-ca5835115cad" height="420" alt="Payment Screen" style="border-radius: 8px;" /> |
+
+### Demo Video
+
+Watch the EcoCity platform in action:  
+[**View Demo Video on Canva**](https://www.canva.com/design/DAG8LaF9Mrg/0bRssruBThs7RShs__tkAQ/edit?utm_content=DAG8LaF9Mrg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
